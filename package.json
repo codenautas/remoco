@@ -1,0 +1,26 @@
+{
+  "name": "remoco",
+  "description": "remote control client 2 client",
+  "version": "0.0.1",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "express": "^4.17.1",
+    "ajax-best-promise": "^0.3.7",
+    "require-bro": "^0.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.2",
+    "@types/express": "^4.11.1",
+    "@types/webpack": "^4.1.4",
+    "mixin-patch": "^0.3.3",
+    "server4test": "^0.8.0"
+  },
+  "mixin-patch": true,
+  "scripts": {
+    "prepare": "tsc -p src/client & tsc -p src/example & mixin-patch",
+    "example": "node dist/example/remoco-server",
+    "mixin-patch": "mixin-patch"
+  }
+}
