@@ -1,22 +1,30 @@
 import {ActionParams, ActionResult, ClientInfo} from "../common/types";
 
-import {launch, Server4Test, ServiceDef, Request, Response} from "server4test";
+import {launch, Server4Test, ServiceDef, Request, Response, NextFunction} from "server4test";
+
+import {unexpected} from "cast-error"
+import * as MiniTools from "mini-tools"
 
 class RemocoMiddleware{
     losTokens:{[k in string]:ClientInfo}={}
     losIds:{[k in string]:ClientInfo}={}
     getMiddleware(){
-        return (req:Request, res:Response)=>this.middleware(req, res);
+        return (req:Request, res:Response, next?:NextFunction)=>this.middleware(req, res, next);
     }
-    async middleware(req:Request, res:Response){
-        var actionName:string = `${req.query.action}Action`;
-        // @ts-ignore
-        var actionFunction:(params:ActionParams)=>Promise<ActionResult> = this[actionName]
-        // @ts-ignore
-        var params:ActionParams = req.query;
-        if(typeof actionFunction === "function" ){
-            var result = await actionFunction.call(this, params);
-            res.json(result);
+    async middleware(req:Request, res:Response, next?:NextFunction){
+        try {
+            var actionName:string = `${req.query.action}Action`;
+            // @ts-ignore
+            var actionFunction:(params:ActionParams)=>Promise<ActionResult> = this[actionName]
+            // @ts-ignore
+            var params:ActionParams = req.query;
+            if(typeof actionFunction === "function" ){
+                var result = await actionFunction.call(this, params);
+                res.json(result);
+            }
+        } catch (err) {
+            var error = unexpected(err);
+            MiniTools.serveErr(req, res, next!)(error);
         }
     }
     async getTokenAction(_params:ActionParams):Promise<Partial<ActionResult>>{

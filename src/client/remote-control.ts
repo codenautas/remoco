@@ -1,3 +1,4 @@
+import {unexpected} from "cast-error";
 
 window.addEventListener('load', async function(){
     var url = document.getElementById('url') as HTMLInputElement;
@@ -19,24 +20,30 @@ window.addEventListener('load', async function(){
         try{
             var response = await fetch('/remoco?'+new URLSearchParams(params))
             var text = await response.text();
-            // if(text && text != "{}"){
-                consoleDiv.textContent+=': '+text;
-            // }
-            var result=JSON.parse(text);
-            if('scriptUrl' in params){
-                var resultInterval = setInterval(async ()=>{
-                    var response = await fetch('/remoco'+new URLSearchParams({action:'getResult', step:result.step}))
-                    var resultAction = await response.json();
-                    if(resultAction.received){
-                        clearInterval(resultInterval);
-                        consoleDiv.textContent+=' → '+JSON.stringify(resultAction.result);
-                    }
-                },2000)
-            }else{
-                token = result.token;
+            var resultDivLine = document.createElement('span');
+            resultDiv.textContent += ': ';
+            resultDiv.appendChild(resultDivLine);
+            resultDivLine.textContent = text;
+            if (response.status >= 400) {
+                resultDivLine.style.color = 'red'
+            } else {
+                var result = JSON.parse(text);
+                if('scriptUrl' in params){
+                    var resultInterval = setInterval(async ()=>{
+                        var response = await fetch('/remoco'+new URLSearchParams({action:'getResult', step:result.step}))
+                        var resultAction = await response.json();
+                        if(resultAction.received){
+                            clearInterval(resultInterval);
+                            resultDiv.textContent+=' → '+JSON.stringify(resultAction.result);
+                        }
+                    },2000)
+                }else{
+                    token = result.token;
+                }
             }
         }catch(err){
-            consoleDiv.textContent+='. ERROR: '+err.message;
+            let error = unexpected(err);
+            resultDiv.textContent+='. ERROR: '+error.message;
         }
     }
 })
