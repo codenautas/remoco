@@ -2,7 +2,7 @@ import {ActionParams, ActionResult, ClientInfo} from "../common/types";
 
 import {launch, Server4Test, ServiceDef, Request, Response, NextFunction} from "server4test";
 
-import {unexpected} from "cast-error"
+import { expected } from "cast-error"
 import * as MiniTools from "mini-tools"
 
 class RemocoMiddleware{
@@ -23,7 +23,11 @@ class RemocoMiddleware{
                 res.json(result);
             }
         } catch (err) {
-            var error = unexpected(err);
+            var error = expected(err);
+            if (error.message == "invalid token"){
+                // @ts-expect-error todavía no tiene el status
+                error.status = 406
+            }   
             MiniTools.serveErr(req, res, next!)(error);
         }
     }

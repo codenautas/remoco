@@ -7,14 +7,21 @@ window.addEventListener('load', async function(){
     if(typeof fetch == "undefined"){
         main_layout.textContent="typeof fetch is undefined";
     }
-    var response = await fetch('/remoco?'+new URLSearchParams({action:'getToken'}));
+    var response = await fetch('../../remoco?'+new URLSearchParams({action:'getToken'}));
     var result:ActionResult = await response.json();
     idCorto.textContent = result.idCorto;
     var token: string = result.token;
     var step: number = 0;
     tokenDiv.textContent = result.token;
+    // @ts-ignore
+    controlar_compatibilidad(false, 'resultado-incompatibilidad');
     setInterval(async ()=>{
-        var response = await fetch('/remoco?'+new URLSearchParams({action:'getScripts', token, step:step.toString()}))
+        var response = await fetch('../../remoco?'+new URLSearchParams({action:'getScripts', token, step:step.toString()}));
+        if (response.status == 406) {
+            main_layout.textContent = "ERROR 406. Must refresh. ";
+            main_layout.textContent += await response.text();
+            return;
+        }
         var resultAction:ActionResult = await response.json();
         resultAction.scripts.forEach(s=>{
             var script = document.createElement('script')

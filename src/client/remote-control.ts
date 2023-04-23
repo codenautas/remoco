@@ -18,7 +18,7 @@ window.addEventListener('load', async function(){
         resultDiv.textContent = '\n' + ('scriptUrl' in params? params.scriptUrl : 'conectando');
         consoleDiv.insertBefore(resultDiv, consoleDiv.children[0]);
         try{
-            var response = await fetch('/remoco?'+new URLSearchParams(params))
+            var response = await fetch('../../remoco?'+new URLSearchParams(params))
             var text = await response.text();
             var resultDivLine = document.createElement('span');
             resultDiv.textContent += ': ';
@@ -30,7 +30,7 @@ window.addEventListener('load', async function(){
                 var result = JSON.parse(text);
                 if('scriptUrl' in params){
                     var resultInterval = setInterval(async ()=>{
-                        var response = await fetch('/remoco'+new URLSearchParams({action:'getResult', step:result.step}))
+                        var response = await fetch('../../remoco'+new URLSearchParams({action:'getResult', step:result.step}))
                         var resultAction = await response.json();
                         if(resultAction.received){
                             clearInterval(resultInterval);
