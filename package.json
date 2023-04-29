@@ -1,24 +1,24 @@
 {
   "name": "remoco",
   "description": "remote control client 2 client",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "files": [
     "dist"
   ],
   "dependencies": {
     "express": "^4.18.2",
     "ajax-best-promise": "^0.3.7",
-    "backend-plus": "^1.18.0",
+    "backend-plus": "^1.18.2",
     "cast-error": "^0.1.0",
     "mini-tools": "^1.12.0",
-    "require-bro": "^0.3.0",
+    "require-bro": "^0.3.1",
     "server4test": "^0.8.7"
   },
   "devDependencies": {
-    "@types/node": "^18.15.13",
+    "@types/node": "^18.16.3",
     "@types/express": "^4.17.17",
     "@types/webpack": "^5.28.1",
-    "mixin-patch": "^0.4.0"
+    "mixin-patch": "^0.4.1"
   },
   "mixin-patch": {
     "copy": [
